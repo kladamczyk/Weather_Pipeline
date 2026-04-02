@@ -10,20 +10,18 @@ def fetch_past_weather_data(latitude, longitude, past_days) -> dict:
             "weather_code,"
             "temperature_2m_max,temperature_2m_min,"
             "apparent_temperature_max,apparent_temperature_min,"
-            "sunset,sunrise,"
             "rain_sum,snowfall_sum"
         f"&past_days={past_days}"
         "&forecast_days=0"
         )
-    response = requests.get(url)
-
-    #TUTAJ TRZEBA DODAĆ ERROR HANDLING
     try:
+        response = requests.get(url)
+        response.raise_for_status()
+
         weather_data = response.json()
         return weather_data
-    except:
-        print("Boo hoo")
-        pass
+    except Exception as e:
+        print(f"Unexpected {e}")
 
 def fetch_weather_forecast_data(latitude, longitude, forecast_days) -> dict:
     url = (
@@ -34,22 +32,20 @@ def fetch_weather_forecast_data(latitude, longitude, forecast_days) -> dict:
             "weather_code,"
             "temperature_2m_max,temperature_2m_min,"
             "apparent_temperature_max,apparent_temperature_min,"
-            "sunset,sunrise,"
             "rain_sum,snowfall_sum"
         f"&forecast_days={forecast_days}"
         )
-    response = requests.get(url)
-
-    #TUTAJ TRZEBA DODAĆ ERROR HANDLING
+    
     try:
+        response = requests.get(url)
+        response.raise_for_status()
+
         weather_data = response.json()
         return weather_data
-    except:
-        print("Boo hoo")
-        pass
+    except Exception as e:
+        print(f"Unexpected {e}")
 
 def main():
-    #ZAPISUJE DANE DO PLIKU JSON
     with open("weather_past_data.json", "w") as file:
         json.dump(fetch_past_weather_data(52.13, 21.00, 92), file, indent=4)
 
