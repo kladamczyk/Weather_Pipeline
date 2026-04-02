@@ -23,23 +23,29 @@ def create_database():
         Base.metadata.create_all(engine)
         return engine
     except Exception as e:
-        print("Unexpected {e}")
+        print(f"Unexpected {e}")
 
 def load_data_to_database(df):
     engine = create_database()
 
-    df["date"] = pd.to_datetime(df["date"])
+    try:
+        df["date"] = pd.to_datetime(df["date"])
 
-    existing_dates = pd.read_sql("SELECT date FROM weather_database", Session(engine).bind)
-    existing_dates_set = set(existing_dates["date"])
+        existing_dates = pd.read_sql("SELECT date FROM weather_database", Session(engine).bind)
+        existing_dates_set = set(existing_dates["date"])
 
-    new_df = df[~df["date"].isin(existing_dates_set)]
-    if not new_df.empty:
-        new_df.to_sql("weather_database", engine, if_exists="append", index=False)
+        new_df = df[~df["date"].isin(existing_dates_set)]
+        if not new_df.empty:
+            new_df.to_sql("weather_database", engine, if_exists="append", index=False)
+        return True
+    except Exception as e:
+        print(f"Unexpected {e}")
 
 def main():
-    df = pd.read_csv("transformed_weather_forecast_data.csv")
-    load_data_to_database(df)
+    df = pd.read_csv("transformed_weather_data.csv")
+    b = load_data_to_database(df)
+    if b:
+        print("Succesfully loaded weather data to database.")
 
 if __name__ == "__main__":
     main()
