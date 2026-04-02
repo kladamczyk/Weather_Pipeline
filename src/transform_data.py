@@ -5,6 +5,7 @@ def read_file(file):
     try:
         with open(file, "r") as file:
             data = json.load(file)
+            print(type(data))
         return data
     except Exception as e:
         print(f"Unexpected {e}")
@@ -29,14 +30,9 @@ def transform_data(data) -> pd.DataFrame:
         print(f"Unexpected {e}")
 
 def main():
-    data_weather_forecast = read_file('weather_forecast_data.json')
-    data_weather_past = read_file('weather_past_data.json')
-
-    transformed_weather_forecast = transform_data(data_weather_forecast)
-    transformed_weather_past = transform_data(data_weather_past)
-
-    transformed_weather_forecast.to_csv("transformed_weather_forecast_data.csv", index=False)
-    transformed_weather_past.to_csv("transformed_weather_past_data.csv", index=False)
+    data_weather = read_file('weather_past_data.json')
+    transformed_weather = transform_data(data_weather)
+    transformed_weather.to_csv("transformed_weather_data.csv", index=False)
 
 if __name__ == "__main__":
     main()
